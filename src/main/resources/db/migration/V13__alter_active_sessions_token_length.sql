@@ -1,0 +1,1 @@
+ALTER TABLE active_sessions ALTER COLUMN session_token TYPE VARCHAR(1000);

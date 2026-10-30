@@ -1,0 +1,173 @@
+spring:
+    application:
+        name: sigmav-backend
+    profiles:
+        active: ${SPRING_PROFILES_ACTIVE:dev}
+
+---
+spring:
+    config:
+        activate:
+            on-profile: dev
+    datasource:
+        url: jdbc:postgresql://localhost:5432/sigmav_dev
+        username: af_user
+        password: af_pass
+    jpa:
+        open-in-view: true
+        hibernate:
+            ddl-auto: validate
+        show-sql: true
+        properties:
+            hibernate:
+                format_sql: true
+    flyway:
+        enabled: true
+        locations: classpath:db/migration,classpath:db/seed
+        baseline-on-migrate: true
+    data:
+        redis:
+            host: localhost
+            port: 6379
+            timeout: 2s
+            connect-timeout: 2s
+    mail:
+        host: smtp.resend.com
+        port: 465
+        username: resend
+        password: ${RESEND_API_KEY:re_changeme}
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    ssl:
+                        enable: true
+
+r2:
+    account-id: ${R2_ACCOUNT_ID:changeme}
+    access-key: ${R2_ACCESS_KEY:changeme}
+    secret-key: ${R2_SECRET_KEY:changeme}
+    bucket-name: ${R2_BUCKET_NAME:sigmav}
+    public-bucket-name: ${R2_PUBLIC_BUCKET_NAME:sigmav-public}
+    presigned-url-expiry-minutes: 15
+    public-url: ${R2_PUBLIC_URL:https://pub-changeme.r2.dev}
+
+decolecta:
+    api-url: https://api.decolecta.com
+    token: ${DECOLECTA_TOKEN:sk_14317.KLj3ofPelfmJJK95HF4F1wVtCgsKXDzf}
+
+springdoc:
+    api-docs:
+        path: /api-docs
+    swagger-ui:
+        path: /swagger-ui
+        operations-sorter: alpha
+        tags-sorter: alpha
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health,info,metrics
+    endpoint:
+        health:
+            show-details: always
+    health:
+        mail:
+            enabled: false
+
+app:
+    cors:
+        allowed-origins: http://localhost:4200,https://app.sigmav.com
+    jwt:
+        secret: dev-secret-key-at-least-64-characters-long-for-hmac-sha-512-algorithm-change-in-prod
+        expiration: 86400000
+        refresh-expiration: 604800000
+    frontend-url: http://localhost:4200
+    mail:
+        from: noreply@sigmav.com
+
+---
+spring:
+    config:
+        activate:
+            on-profile: prod
+    datasource:
+        url: jdbc:postgresql://localhost:5432/sigmav_db
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+    jpa:
+        open-in-view: false
+        hibernate:
+            ddl-auto: validate
+        show-sql: false
+        properties:
+            hibernate:
+                jdbc:
+                    batch_size: 50
+                order_inserts: true
+                order_updates: true
+    flyway:
+        enabled: true
+        locations: classpath:db/migration
+        baseline-on-migrate: true
+    data:
+        redis:
+            host: ${REDIS_HOST:localhost}
+            port: ${REDIS_PORT:6379}
+            password: ${REDIS_PASSWORD:}
+            timeout: 2s
+            connect-timeout: 2s
+    mail:
+        host: smtp.resend.com
+        port: 465
+        username: resend
+        password: ${RESEND_API_KEY}
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    ssl:
+                        enable: true
+
+r2:
+    account-id: ${R2_ACCOUNT_ID}
+    access-key: ${R2_ACCESS_KEY}
+    secret-key: ${R2_SECRET_KEY}
+    bucket-name: ${R2_BUCKET_NAME:sigmav}
+    public-bucket-name: ${R2_PUBLIC_BUCKET_NAME}
+    presigned-url-expiry-minutes: 15
+    public-url: ${R2_PUBLIC_URL}
+
+decolecta:
+    api-url: https://api.decolecta.com
+    token: ${DECOLECTA_TOKEN}
+
+springdoc:
+    api-docs:
+        enabled: false
+    swagger-ui:
+        enabled: false
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health,info
+    endpoint:
+        health:
+            show-details: never
+
+app:
+    cors:
+        allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:https://app.sigmav.com}
+    jwt:
+        secret: ${APP_JWT_SECRET}
+        expiration: ${APP_JWT_EXPIRATION:86400000}
+        refresh-expiration: ${APP_JWT_REFRESH_EXPIRATION:604800000}
+    frontend-url: ${APP_FRONTEND_URL:https://app.sigmav.com}
+    mail:
+        from: noreply@sigmav.com
+
+server:
+    port: 8080

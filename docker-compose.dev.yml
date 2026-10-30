@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: af-postgres
+    environment:
+      POSTGRES_DB: sigmav_dev
+      POSTGRES_USER: af_user
+      POSTGRES_PASSWORD: af_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - af_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U af_user -d sigmav_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: af-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - af_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  af_postgres_data:
+  af_redis_data:

@@ -1,0 +1,2 @@
+-- V11__seed_data.sql
+-- Seed data removido. Migración conservada para mantener el historial de Flyway.
